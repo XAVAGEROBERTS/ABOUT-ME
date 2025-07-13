@@ -352,8 +352,7 @@ if (contactForm) {
     sr.reveal('.timeline-item', { interval: 200 });
     sr.reveal('.contact-info, .contact-form', { origin: 'left', interval: 200 });
 
-    // If ScrollReveal is not defined, you would need to include it from CDN:
-    // <script src="https://unpkg.com/scrollreveal"></script>
+
 });
 
 // Fallback for ScrollReveal if not loaded
