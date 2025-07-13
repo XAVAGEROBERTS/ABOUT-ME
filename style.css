@@ -30,6 +30,10 @@ body {
     overflow-x: hidden;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
