@@ -67,7 +67,7 @@
             </div>
             <div class="hero-image">
                 <div class="image-wrapper">
-                    <img src="ROBERT PROFILE.jpg" alt="Kenyi Robert Waya" class="profile-img">
+                    <img src="images/ROBERT PROFILE.jpg" alt="Kenyi Robert Waya" class="profile-img">
                     <div class="tech-icons">
                         <i class="fab fa-js icon-1"></i>
                         <i class="fab fa-python icon-2"></i>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="about-image">
                     <div class="image-container">
-                        <img src="ROBERT PROFILE.jpg" alt="Kenyi Robert Waya" class="about-img">
+                        <img src="images/ROBERT PROFILE.jpg" alt="Kenyi Robert Waya" class="about-img">
                         <div class="image-border"></div>
                     </div>
                 </div>
@@ -404,6 +404,27 @@
     </section>
 
     <!-- Contact Section -->
+
+
+    <!-- AI Assistant Button -->
+<div class="ai-assistant-btn">
+    <i class="fas fa-robot"></i>
+</div>
+
+<!-- AI Assistant Chat Interface -->
+<div class="ai-assistant-modal">
+    <div class="ai-assistant-header">
+        <h3>Ask Me Anything</h3>
+        <button class="close-ai">&times;</button>
+    </div>
+    <div class="ai-assistant-body">
+        <div class="ai-messages"></div>
+        <div class="ai-input">
+            <input type="text" placeholder="Ask me about my skills, education, etc...">
+            <button class="ai-send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
     <section id="contact" class="contact">
         <div class="container">
             <h2 class="section-title">
@@ -438,11 +459,12 @@
                 </div>
                 <div class="contact-form">
                    <form id="contactForm">
-    <!-- Web3Forms Fields -->
+    <!-- Web3Forms Required Fields -->
     <input type="hidden" name="access_key" value="6626aac0-98ea-46a3-82b2-8a396edaa702">
     <input type="hidden" name="subject" value="New Message from Portfolio Contact Form">
     <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
     
+    <!-- Your Existing Form Fields -->
     <div class="form-group">
         <input type="text" id="name" name="name" required>
         <label for="name">Name</label>
