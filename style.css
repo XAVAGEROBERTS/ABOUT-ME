@@ -1483,7 +1483,7 @@ p {
 @media (max-width: 576px) {
     .hero-title {
         font-size: 48px;
-        margin-bottom: 0px;
+        padding-top: 20px;
     }
 
     .hero-subtitle {
