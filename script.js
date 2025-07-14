@@ -352,7 +352,8 @@ if (contactForm) {
     sr.reveal('.timeline-item', { interval: 200 });
     sr.reveal('.contact-info, .contact-form', { origin: 'left', interval: 200 });
 
-
+    
+    // <script src="https://unpkg.com/scrollreveal"></script>
 });
 
 // Fallback for ScrollReveal if not loaded
@@ -384,3 +385,292 @@ if (typeof ScrollReveal !== 'function') {
         window.addEventListener('load', checkIfInView);
     });
 }
+
+
+
+// AI Assistant Functionality with Loading Indicators Below Each Message
+document.addEventListener('DOMContentLoaded', function() {
+    const aiBtn = document.querySelector('.ai-assistant-btn');
+    const aiModal = document.querySelector('.ai-assistant-modal');
+    const closeAi = document.querySelector('.close-ai');
+    const aiInput = document.querySelector('.ai-input input');
+    const aiSend = document.querySelector('.ai-send');
+    const aiMessages = document.querySelector('.ai-messages');
+    
+    // Track if we've shown the fallback notification
+    let hasShownFallbackNotice = false;
+    let loadingTimeouts = {};
+    
+    // Toggle AI Assistant
+    aiBtn.addEventListener('click', () => {
+        aiModal.classList.toggle('active');
+    });
+    
+    closeAi.addEventListener('click', () => {
+        aiModal.classList.remove('active');
+    });
+    
+    // Local knowledge base
+    const localKnowledgeBase = {
+        personal_info: {
+            name: "Kenyi Robert Waya",
+            short_name: "Robert",
+            pronouns: {
+                subject: "he",
+                object: "him",
+                possessive: "his",
+                reflexive: "himself"
+            },
+            profession: "Computer & Software Engineer",
+            specialization: "Full-Stack Development & Embedded Systems",
+            location: {
+                city: "Kampala",
+                country: "Uganda"
+            },
+            professional_summary: "Innovative computer engineer with expertise in full-stack web development and embedded systems.",
+            detailed_introduction: "Robert is a skilled Computer and Software Engineer from ISBAT University Kampala. With a strong background in both software development and computer engineering, he specializes in building full-stack applications and embedded systems.",
+            hobbies: [
+                "Open source contributions",
+                "Mentoring junior developers",
+                "Building IoT devices"
+            ]
+        },
+        education: {
+            degree: "Bachelor of Science in Computer Engineering",
+            university: "ISBAT University, Kampala"
+        },
+        skills: {
+            "Programming Languages": ["JavaScript (ES6+)", "Python", "Java", "C/C++"],
+            "Web Development": ["React.js", "Node.js", "Express", "Django", "Flask"],
+            "Database": ["SQL", "MongoDB", "PostgreSQL"]
+        },
+        experience: [
+            {
+                role: "Software Development Intern",
+                company: "Tech Solutions Uganda",
+                period: "June 2023 - December 2023"
+            }
+        ],
+        projects: [
+            {
+                name: "Smart Agriculture IoT System",
+                description: "An IoT-based solution for monitoring farm conditions",
+                tech: ["Python", "Django", "Raspberry Pi"]
+            }
+        ],
+        contact: {
+            email: "robertmayhemj@gmail.com",
+            phone: "+256 765 673 373"
+        }
+    };
+    
+    // Local response generator
+    function getLocalResponse(question) {
+        question = question.toLowerCase().trim();
+        const { name, short_name, pronouns } = localKnowledgeBase.personal_info;
+        
+        if (/hi|hello|hey/.test(question)) {
+            return `Hello! I'm ${name}'s AI assistant. How can I help?`;
+        }
+        
+        if (/bye|goodbye|exit/.test(question)) {
+            return "Goodbye! Feel free to return with more questions.";
+        }
+        
+        if (/thank|thanks|appreciate/.test(question)) {
+            return "You're welcome!";
+        }
+        
+        if (/who is|tell me about|describe/.test(question)) {
+            return `${localKnowledgeBase.personal_info.detailed_introduction}\n\nName: ${name}\nProfession: ${localKnowledgeBase.personal_info.profession}`;
+        }
+        
+        if (/name|who are you/.test(question)) {
+            return `I'm ${name}, a ${localKnowledgeBase.personal_info.profession}.`;
+        }
+        
+        if (/location|where|live|based|city|country/.test(question)) {
+            const loc = localKnowledgeBase.personal_info.location;
+            return `${name} is based in ${loc.city}, ${loc.country}.`;
+        }
+        
+        if (/professional|background|summary|overview/.test(question)) {
+            return `Professional Background:\nName: ${name}\nProfession: ${localKnowledgeBase.personal_info.profession}\n${localKnowledgeBase.personal_info.professional_summary}`;
+        }
+        
+        if (/education|degree|study|university|school/.test(question)) {
+            const edu = localKnowledgeBase.education;
+            return `Education:\nDegree: ${edu.degree}\nUniversity: ${edu.university}`;
+        }
+        
+        if (/skill|skills|ability|expertise/.test(question)) {
+            let response = "Skills:\n";
+            for (const [category, skills] of Object.entries(localKnowledgeBase.skills)) {
+                response += `\n${category}: ${skills.join(', ')}`;
+            }
+            return response;
+        }
+        
+        if (/experience|job|career|work history/.test(question)) {
+            let response = "Experience:\n";
+            localKnowledgeBase.experience.forEach(exp => {
+                response += `\n${exp.role} at ${exp.company} (${exp.period})`;
+            });
+            return response;
+        }
+        
+        if (/project|projects|work|portfolio/.test(question)) {
+            let response = "Projects:\n";
+            localKnowledgeBase.projects.forEach(proj => {
+                response += `\n${proj.name}: ${proj.description}\nTechnologies: ${proj.tech.join(', ')}\n`;
+            });
+            return response;
+        }
+        
+        if (/contact|email|phone|reach|social media|hire/.test(question)) {
+            const contact = localKnowledgeBase.contact;
+            return `Contact:\nEmail: ${contact.email}\nPhone: ${contact.phone}`;
+        }
+        
+        return `I can tell you about ${name}'s professional background, skills, education, projects and experience.`;
+    }
+    
+    // Create loading indicator for a specific message
+    function createLoadingIndicator(messageId) {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = `loading-${messageId}`;
+        loadingDiv.className = 'ai-message bot loading';
+        loadingDiv.innerHTML = `
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        loadingDiv.style.display = 'none';
+        return loadingDiv;
+    }
+    
+    // Show loading indicator after 500ms delay for specific message
+    function showLoading(messageId) {
+        loadingTimeouts[messageId] = setTimeout(() => {
+            const loadingIndicator = document.getElementById(`loading-${messageId}`);
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+            }
+        }, 500);
+    }
+    
+    // Hide loading indicator for specific message
+    function hideLoading(messageId) {
+        clearTimeout(loadingTimeouts[messageId]);
+        const loadingIndicator = document.getElementById(`loading-${messageId}`);
+        if (loadingIndicator) {
+            loadingIndicator.remove();
+        }
+        delete loadingTimeouts[messageId];
+    }
+    
+    // Send message function with fallback
+    async function sendMessage() {
+        const message = aiInput.value.trim();
+        if (message) {
+            // Add user message to chat
+            const messageId = Date.now();
+            addMessage(message, 'user', messageId);
+            aiInput.value = '';
+            
+            // Add loading indicator right after the message
+            const loadingIndicator = createLoadingIndicator(messageId);
+            aiMessages.appendChild(loadingIndicator);
+            
+            // Show loading indicator
+            showLoading(messageId);
+            
+            try {
+                // First try to contact the backend
+                const response = await fetchWithTimeout('http://localhost:5000/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: message }),
+                    timeout: 3000 // 3 seconds timeout
+                });
+                
+                if (!response.ok) throw new Error('Backend not responding');
+                
+                const data = await response.json();
+                hideLoading(messageId);
+                addMessage(data.response, 'bot');
+            } catch (error) {
+                console.log('Using local knowledge base:', error);
+                // If backend fails, use local knowledge base
+                hideLoading(messageId);
+                const localResponse = getLocalResponse(message);
+                addMessage(localResponse, 'bot');
+                
+                // Only show the fallback notice once per session
+                if (!hasShownFallbackNotice) {
+                    addMessage("Note: Currently using local knowledge base as the server is unavailable.", 'bot-info');
+                    hasShownFallbackNotice = true;
+                }
+            }
+        }
+    }
+    
+    // Helper function for fetch with timeout
+    function fetchWithTimeout(url, options = {}) {
+        const { timeout = 8000 } = options;
+        
+        const controller = new AbortController();
+        const { signal } = controller;
+        
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
+        const fetchPromise = fetch(url, {
+            ...options,
+            signal
+        }).finally(() => clearTimeout(timeoutId));
+        
+        return fetchPromise;
+    }
+    
+    // Add message to chat
+    function addMessage(text, sender, messageId) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('ai-message', sender);
+        if (messageId) {
+            messageDiv.dataset.messageId = messageId;
+        }
+        messageDiv.textContent = text;
+        aiMessages.appendChild(messageDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+    
+    // Send message on button click or Enter key
+    aiSend.addEventListener('click', sendMessage);
+    aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Initial greeting
+    setTimeout(() => {
+        addMessage("Hi! I'm Robert's AI assistant. Ask me anything about him", 'bot');
+        
+        // Check backend availability (silently)
+        fetchWithTimeout('http://localhost:5000/ask', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ question: 'test' }),
+            timeout: 2000
+        }).catch(() => {
+            // Only show the fallback notice if the user actually interacts
+        });
+    }, 1000);
+});
