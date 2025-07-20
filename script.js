@@ -207,10 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initTypeWriter);
-
     // Animate skills bars on scroll
     const skills = document.querySelectorAll('.skill');
     const skillsSection = document.querySelector('.skills');
