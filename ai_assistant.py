@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os 
 import random
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)
+# Configure CORS properly for production
+CORS(app, resources={
+    r"/ask": {
+        "origins": ["https://robertaboutme.42web.io", "http://localhost:*"]  # Add all your domains
+    }
+})
 
 knowledge_base = {
     "personal_info": {
@@ -433,6 +439,7 @@ def get_response(question):
         f"Ask me about {short_name}'s education, skills, or professional experience. You can also ask about {pronouns['possessive']} publications or certifications."
     ])
 
+
 @app.route('/ask', methods=['POST'])
 def ask_ai():
     data = request.json
@@ -448,5 +455,10 @@ def ask_ai():
         "timestamp": datetime.now().isoformat()
     })
 
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
