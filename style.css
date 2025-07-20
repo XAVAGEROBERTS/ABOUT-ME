@@ -1513,11 +1513,13 @@ p {
 
 @media (max-width: 576px) {
     .hero-title {
+        margin-top: 24px;
         font-size: 48px;
     }
 
     .hero-subtitle {
         font-size: 18px;
+        margin-left: 60px;
     }
 
     .section-title {
