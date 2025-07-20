@@ -1421,11 +1421,6 @@ p {
     .contact-content {
         flex-direction: column;
     }
-    
-    .scroll-down {
-        padding-left: 250px;
-        padding-bottom: 30px;
-    }
 
 }
 
@@ -1519,11 +1514,6 @@ p {
         flex-direction: column;
         align-items: center;
         gap: 15px;
-    }
-
-    
-    .scroll-down {
-        margin-top: -180px;
     }
 
 }
