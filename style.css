@@ -374,11 +374,32 @@ p {
     }
 }
 
+/* Fix for typewriter container */
 .hero-subtitle {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    margin-left: 7rem;
+}
+
+/* Make sure text is visible */
+.typewrite {
+    color: #64ffda !important; /* Force accent color */
+    opacity: 1 !important;
+    font-weight: 500;
     font-size: 24px;
-    margin-bottom: 20px;
-    color: var(--text-secondary);
-    min-height: 30px;
+}
+
+/* Blinking cursor effect */
+.typewrite::after {
+    content: '|';
+    animation: blink 1s infinite;
+    color: #64ffda;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 .hero-description {
@@ -517,6 +538,7 @@ p {
     color: var(--text-color);
     text-decoration: none;
     transition: var(--transition);
+   
 }
 
 .scroll-down:hover {
@@ -1396,6 +1418,8 @@ p {
     margin-bottom: 5px;
 }
 
+
+
 /* Responsive Styles */
 @media (max-width: 992px) {
     .hero .container {
@@ -1407,7 +1431,6 @@ p {
 
     .hero-content {
         margin-bottom: 50px;
-        margin-top: 10px;
     }
 
     .hero-buttons {
@@ -1516,4 +1539,69 @@ p {
         gap: 15px;
     }
 
+      .hero-content {
+        margin-bottom: 50px;
+        margin-top: 20px;
+    }
+
 }
+
+@media (max-width: 340px) {
+    .hero-title {
+        font-size: 30px;
+        margin-right: 60px;
+    }
+
+    .hero-subtitle {
+        font-size: 10px;
+        margin-left: 40px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+        margin-left: 0px;
+        margin-right: 64px;
+    }
+
+    .nav-links {
+        gap: 20px;
+    }
+
+    .nav-link {
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .contact-item i {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+    .hero-buttons{
+        margin-right: 60px;
+
+    }
+
+    .image-wrapper{
+        height: 250px;
+        width: 250px;
+      
+    }
+
+    .tech-icons i {
+        font-size: 30px;
+        padding: 5px;
+    }
+
+    .ai-assistant-modal {
+        width: 300px;
+        bottom: 80px;
+    }
+
+
+}
+
