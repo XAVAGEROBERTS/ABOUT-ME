@@ -588,16 +588,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show loading indicator
             showLoading(messageId);
             
-            try {
-                // First try to contact the backend
-                const response = await fetchWithTimeout('http://localhost:5000/ask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ question: message }),
-                    timeout: 3000 // 3 seconds timeout
-                });
+             try {
+            // Updated to use your hosted backend
+            const response = await fetchWithTimeout('https://your-ai-backend.onrender.com/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: message }),
+                timeout: 5000 // 5 seconds timeout
+            });
                 
                 if (!response.ok) throw new Error('Backend not responding');
                 
@@ -658,19 +658,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Initial greeting
-    setTimeout(() => {
-        addMessage("Hi! I'm Robert's AI assistant. Ask me anything about him", 'bot');
-        
-        // Check backend availability (silently)
-        fetchWithTimeout('http://localhost:5000/ask', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ question: 'test' }),
-            timeout: 2000
-        }).catch(() => {
-            // Only show the fallback notice if the user actually interacts
-        });
-    }, 1000);
+  // the initial health check
+setTimeout(() => {
+    addMessage("Hi! I'm Robert's AI assistant. Ask me anything about him", 'bot');
+    
+    // Check backend availability (silently)
+    fetchWithTimeout('https://your-ai-backend.onrender.com/health', {
+        method: 'GET',
+        timeout: 2000
+    }).catch(() => {
+        // Only show the fallback notice if the user actually interacts
+    });
+}, 1000);
 });
